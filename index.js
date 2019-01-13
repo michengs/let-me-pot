@@ -53,23 +53,41 @@ const {command} = mod.command || mod.require;
 
 	// ~~~* Hook functions * ~~~ \\
 
-	function sLogin(event) {
+
+
+	function sRequestContract() {
+		inContract = true
+	}
+
+	function StopContract() {
+		inContract = false
+	}
+
+	// ~~~ * Packet Hooks * ~~~ \\
+
+	
+	
+	mod.hook('S_LOGIN', 10, (event) => {
+		
 		oCid = event.gameId
 		inContract = false
-	}
+	});
 
-	function sSpawnMe(event) {
+	mod.hook('S_SPAWN_ME', 3, (event) =>  {
 		oAlive = event.alive
 		inContract = false
-	}
+	});
+	
 
-	function sLoadTopo(event) {
+	mod.hook('S_LOAD_TOPO', 3, (event) =>   {
 		oVehicleEx = null
 		inContract = false
 		inBattleground = event.zone === oBattleground
-	}
+	});
+	
 
-	function sInven(event) {
+	
+	mod.hook('S_INVEN', 16, { order: -10 }, (event) =>   {
 		if (!enabled) return;
 		InventoryItems = event.first ? event.items : InventoryItems.concat(event.items);
 		if (!event.more) {
@@ -83,45 +101,39 @@ const {command} = mod.command || mod.require;
 				mpPotList[p].invQtd = mpamm === undefined ? 0 : mpamm.amount;
 			}
 		}
-	}
-
-	function cUserItem(event) {
+	});
+	
+	
+	mod.hook('C_USE_ITEM', 3, { order: -10 }, (event) =>    {
 		if (getPotInfo && EqGid(event.gameId)) {
 			console.log(`(Let Me Pot) Potion info: { item: '${event.id}' }`);
 			getPotInfo = false;
 			return false;
 		}
-	}
-
-	function sBattleFieldEntranceInfo(event) {
+	})
+	mod.hook('S_BATTLE_FIELD_ENTRANCE_INFO', 1, (event)  =>   {
 		oBattleground = event.zone
-	}
+	})
 
-	function sMountVehicle(event) {
+	mod.hook('S_MOUNT_VEHICLE', 2, (event)  =>   {
 		if (isMe(event.gameId)) oVehicle = true
-	}
-
-	function sUnMountVehicle(event) {
+	})
+	mod.hook('S_UNMOUNT_VEHICLE', 2, (event)  =>   {
 		if (isMe(event.gameId)) oVehicle = false
-	}
-
-	function sMountVehicleEx(event) {
+	})
+	mod.hook('S_MOUNT_VEHICLE_EX', 1, (event) =>    {
 		if (EqGid(event.target)) oVehicleEx = event.vehicle
-	}
-
-	function sUnmountVehicleEx(event) {
+	})
+	mod.hook('S_UNMOUNT_VEHICLE_EX', 1, (event) =>    {
 		if (EqGid(event.target)) oVehicleEx = null
-	}
-
-	function sUserStatus(event) {
+	})
+	mod.hook('S_USER_STATUS', 2, (event) =>    {
 		if (EqGid(event.gameId)) oInCombat = event.status === 1
-	}
-
-	function sCreatureLife(event) {
+	})
+	mod.hook('S_CREATURE_LIFE', 2, (event) =>    {
 		if (isMe(event.gameId)) oAlive = event.alive
-	}
-
-	function sCreatureChangeHp(event) {
+	})
+	mod.hook('S_CREATURE_CHANGE_HP', 6, (event) =>    {
 		if (!enabled || !AutoHp || !EqGid(event.target)) return;
 		oHp = Math.round(Number(event.curHp) / Number(event.maxHp) * 100);
 		for (let i = 0; i < hpPotList.length; i++) {
@@ -133,9 +145,8 @@ const {command} = mod.command || mod.require;
 				if (notifications) msg('Used ' + hpPotList[i].name + ', still have ' + hpPotList[i].invQtd + ' left.');
 			}
 		}
-	}
-
-	function sPlayerChangeMp(event) {
+	})
+	mod.hook('S_PLAYER_CHANGE_MP', 1, (event) =>    {
 		if (!enabled || !AutoMp || !EqGid(event.target)) return;
 		oMana = Math.round(Number(event.currentMp) / Number(event.maxMp) * 100);
 		for (let i = 0; i < mpPotList.length; i++) {
@@ -148,9 +159,8 @@ const {command} = mod.command || mod.require;
 				break;
 			}
 		}
-	}
-
-	function sPlayerStatUpdate(event) {
+	})
+	mod.hook('S_PLAYER_STAT_UPDATE', 10, (event)  =>   {
 		if (!enabled) return;
 		if (AutoHp) {
 			oHp = Math.round(Number(event.hp) / Number(event.maxHp) * 100);
@@ -176,35 +186,7 @@ const {command} = mod.command || mod.require;
 				}
 			}
 		}
-	}
-
-	function sRequestContract() {
-		inContract = true
-	}
-
-	function StopContract() {
-		inContract = false
-	}
-
-	// ~~~ * Packet Hooks * ~~~ \\
-
-	mod.hook('S_LOGIN', 10, sLogin)
-	mod.hook('S_SPAWN_ME', 3, sSpawnMe)
-	mod.hook('S_LOAD_TOPO', 3, sLoadTopo)
-	mod.hook('S_INVEN', 16, { order: -10 }, sInven)
-	mod.hook('C_USE_ITEM', 3, { order: -10 }, cUserItem)
-	mod.hook('S_BATTLE_FIELD_ENTRANCE_INFO', 1, sBattleFieldEntranceInfo)
-
-	mod.hook('S_MOUNT_VEHICLE', 2, sMountVehicle)
-	mod.hook('S_UNMOUNT_VEHICLE', 2, sUnMountVehicle)
-	mod.hook('S_MOUNT_VEHICLE_EX', 1, sMountVehicleEx)
-	mod.hook('S_UNMOUNT_VEHICLE_EX', 1, sUnmountVehicleEx)
-
-	mod.hook('S_USER_STATUS', 2, sUserStatus)
-	mod.hook('S_CREATURE_LIFE', 2, sCreatureLife)
-	mod.hook('S_CREATURE_CHANGE_HP', 6, sCreatureChangeHp)
-	mod.hook('S_PLAYER_CHANGE_MP', 1, sPlayerChangeMp)
-	mod.hook('S_PLAYER_STAT_UPDATE', 10, sPlayerStatUpdate)
+	})
 
 	mod.hook('S_REQUEST_CONTRACT', 'raw', sRequestContract)
 	mod.hook('S_ACCEPT_CONTRACT', 'raw', StopContract)
