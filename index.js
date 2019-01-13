@@ -6,7 +6,7 @@ let AutoMp = true,						// true - Activates the auto-mana potion function		| fal
 const potions = require('./potions')
 
 module.exports = function LetMePot(mod) {
-
+const {command} = mod.command || mod.require;
 	let enabled = true,
 		oCid = null,
 		oInCombat = false,
@@ -39,7 +39,7 @@ module.exports = function LetMePot(mod) {
 	}
 
 	function msg(msg) {
-		mod.command.message('(Let Me Pot) ' + msg);
+	command.message('(Let Me Pot) ' + msg);
 	}
 
 	function useItem(potInfo) {
@@ -216,8 +216,8 @@ module.exports = function LetMePot(mod) {
 	// ~~~ * Commands * ~~~ \\
 
 	
-	/*
-	mod.command.add(['letmepot', 'pot'], (key) => {
+	
+	command.add(['letmepot', 'pot'], (key) => {
 		if (!key) {
 			enabled = !enabled
 			msg(enabled ? 'Enabled.' : 'Disabled.')
@@ -258,5 +258,5 @@ module.exports = function LetMePot(mod) {
 		}
 	})
 	
-	*/
+	
 }
