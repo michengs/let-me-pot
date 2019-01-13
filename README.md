@@ -1,7 +1,7 @@
 自动药水
 版本：0.1.4
 
-用于Tera Proxy的Auto HP / MP Pot模块。
+用于Tera Proxy的自动 HP / MP Pot模块。
 
 还需要一些测试。如果您发现任何错误，请告诉我。
 
