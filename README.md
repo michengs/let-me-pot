@@ -1,40 +1,35 @@
-# let-me-pot
+自动药水
+版本：0.1.4
 
-Version: 0.1.4
+用于Tera Proxy的Auto HP / MP Pot模块。
 
-Auto HP/MP Pot module for Tera Proxy.
+还需要一些测试。如果您发现任何错误，请告诉我。
 
-Still need some tests. If you find any bug just let me know.
+需要Pinkie的Command模块才能工作。
 
-**Need _Command_ module by Pinkie to work.**
+完成
+自动HP药水使用，可配置选项：
+何时使用（HP百分比）
+支持多种药水
+支持非共享冷却时间使用
+自动MP药水使用，可配置选项：
+何时使用（MP％）
+支持多种药水
+支持非共享冷却时间使用
+如果你还活着并且在战斗中它只会使用魔药
+可以在'potion.js'文件中添加和配置任何药水
+如果您想要通知，可以更改'index.js'文件
+命令
+需要在代理通道（/ proxy）中使用
 
-## Done
- * Auto HP Potion usage, configurable options:
-    * When to use (HP percent)
-    * Support for multiple potions
-    * Support for non-shared cooldowns usage
- * Auto MP Potion usage, configurable options:
-    * When to use (MP percent)
-    * Support for multiple potions
-    * Support for non-shared cooldowns usage
- * It will only use potions if you are alive and in combat
- * Can add and configure any potion in the 'potion.js' file
- * Can change in 'index.js' file if you want notifications or not
-
-## Commands
-**Need to be used in _Proxy Channel_ (/proxy)**
-```
 /proxy getpotinfo (see below)
 /proxy letmepot (Toggle the module on/off)
-```
-
-## How to use auto HP without auto MP or vice versa
- * Open 'index.js' file and find the options in the top of the file
- * AUTOMANA and AUTOHP
-
-## How to get new potions ID
- * Use the command /proxy getpotinfo
- * See if it shows the message: 'Use the potion you want and watch the infos in proxy console.'
- * Open you inventory and use the potion you want to know the id
- * See in proxy console the infos about your potion
- * Open 'potions.js' and follow the instructions in the top of the file
+如何在没有自动MP的情况下使用自动HP，反之亦然
+打开'index.js'文件，找到文件顶部的选项
+AUTOMANA和AUTOHP
+如何获得新的魔药ID
+使用命令/ proxy getpotinfo
+看看它是否显示消息：'使用你想要的药水，并在代理控制台中观看信息。
+打开你的库存并使用你想知道id的药水
+在代理控制台中查看有关药水的信息
+打开'potions.js'并按照文件顶部的说明操作
