@@ -2,9 +2,7 @@
 let AutoMp = true,						// true - Activates the auto-mana potion function		| false - Deactivates.
 	AutoHp = true,						// true - Activates the auto-hp potion function			| false - Deactivates.
 	notifications = false;				// true - Activates notification when a potions is used	| false - Deactivates.
-
 const potions = require('./potions')
-
 module.exports = function LetMePot(mod) {
 const {command} = mod.command || mod.require;
 	let enabled = true,
@@ -21,27 +19,20 @@ const {command} = mod.command || mod.require;
 		oVehicle = false,
 		inContract = false,
 		InventoryItems = null;
-
 	let hpPotList = potions.filter(p => { return p.hp });
 	let mpPotList = potions.filter(p => { return !p.hp });
-
 	// ~~~ * Functions * ~~~ \\
-
 	hpPotList.sort((a, b) => { return parseFloat(a.use_at) - parseFloat(b.use_at) });
 	mpPotList.sort((a, b) => { return parseFloat(a.use_at) - parseFloat(b.use_at) });
-
 	function EqGid(xg) {
 		return (xg === oCid)
 	}
-
 	function isMe(id) {
 		return (oCid === id) || (oVehicleEx && oVehicleEx === id)
 	}
-
 	function msg(msg) {
 	command.message('(Let Me Pot) ' + msg);
 	}
-
 	function useItem(potInfo) {
 		mod.send('C_USE_ITEM', 3, {
 			gameId: oCid,
@@ -50,43 +41,27 @@ const {command} = mod.command || mod.require;
 			unk4: true
 		})
 	}
-
 	// ~~~* Hook functions * ~~~ \\
-
-
-
 	function sRequestContract() {
 		inContract = true
 	}
-
 	function StopContract() {
 		inContract = false
 	}
-
 	// ~~~ * Packet Hooks * ~~~ \\
-
-	
-	
 	mod.hook('S_LOGIN', 10, (event) => {
-		
 		oCid = event.gameId
 		inContract = false
 	});
-
 	mod.hook('S_SPAWN_ME', 3, (event) =>  {
 		oAlive = event.alive
 		inContract = false
 	});
-	
-
 	mod.hook('S_LOAD_TOPO', 3, (event) =>   {
 		oVehicleEx = null
 		inContract = false
 		inBattleground = event.zone === oBattleground
 	});
-	
-
-	
 	mod.hook('S_INVEN', 16, { order: -10 }, (event) =>   {
 		if (!enabled) return;
 		InventoryItems = event.first ? event.items : InventoryItems.concat(event.items);
@@ -102,8 +77,6 @@ const {command} = mod.command || mod.require;
 			}
 		}
 	});
-	
-	
 	mod.hook('C_USE_ITEM', 3, { order: -10 }, (event) =>    {
 		if (getPotInfo && EqGid(event.gameId)) {
 			console.log(`(Let Me Pot) Potion info: { item: '${event.id}' }`);
@@ -114,7 +87,6 @@ const {command} = mod.command || mod.require;
 	mod.hook('S_BATTLE_FIELD_ENTRANCE_INFO', 1, (event)  =>   {
 		oBattleground = event.zone
 	})
-
 	mod.hook('S_MOUNT_VEHICLE', 2, (event)  =>   {
 		if (isMe(event.gameId)) oVehicle = true
 	})
@@ -187,18 +159,13 @@ const {command} = mod.command || mod.require;
 			}
 		}
 	})
-
 	mod.hook('S_REQUEST_CONTRACT', 'raw', sRequestContract)
 	mod.hook('S_ACCEPT_CONTRACT', 'raw', StopContract)
 	mod.hook('S_REJECT_CONTRACT', 'raw', StopContract)
 	mod.hook('S_CANCEL_CONTRACT', 'raw', StopContract)
 	mod.hook('S_GACHA_END', 'raw', StopContract)
 	mod.hook('C_BIND_ITEM_EXECUTE', 'raw', StopContract)
-
 	// ~~~ * Commands * ~~~ \\
-
-	
-	
 	command.add(['letmepot', 'pot'], (key) => {
 		if (!key) {
 			enabled = !enabled
@@ -239,6 +206,4 @@ const {command} = mod.command || mod.require;
 				break;
 		}
 	})
-	
-	
 }
